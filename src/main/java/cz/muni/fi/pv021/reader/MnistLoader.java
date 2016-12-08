@@ -8,45 +8,46 @@ import java.io.IOException;
  * Created by Pavel on 12-Nov-16.
  */
 public class MnistLoader {
-    int[] trainLabels;
-    int[] testLabels;
-    int[][][] trainImages;
-    int[][][] testImages;
+    public double[][] trainLabels;
+    public double[][] testLabels;
+    public double[][] trainImages;
+    public double[][] testImages;
+    int numberOfTrainSamples;
+    int numberOfTestSamples;
 
-    public MnistLoader(String trainImages, String trainLabels, String testImages, String testLabels){
-        this.trainLabels = loadLabels(trainLabels);
-        this.testLabels = loadLabels(testLabels);
-        //this.trainImages = loadImages(trainImages);
-        this.testImages = loadImages(testImages);
+    public MnistLoader(String trainImages, String trainLabels, String testImages, String testLabels, int numberOfTrainSamples, int numberOfTestSamples){
+        this.numberOfTrainSamples = numberOfTrainSamples;
+        this.numberOfTestSamples = numberOfTestSamples;
+        this.trainLabels = loadLabels(trainLabels, this.numberOfTrainSamples);
+        this.testLabels = loadLabels(testLabels, this.numberOfTestSamples);
+        this.trainImages = loadImages(trainImages, this.numberOfTrainSamples);
+        this.testImages = loadImages(testImages, this.numberOfTestSamples);
     }
 
-    private int[][][] loadImages(String fileName){
+    private double[][] loadImages(String fileName, int numberOfSamples){
         FileInputStream labelStream = null;
-        int[][][] imageMatrices = null;
+        double[][] imageMatrices = null;
         try{
             labelStream = new FileInputStream(fileName);
             int magicNumber = this.readInt(labelStream);
             int numberOfImages = this.readInt(labelStream);
             int numberOfRows = this.readInt(labelStream);
             int numberOfColumns = this.readInt(labelStream);
-            imageMatrices = new int[numberOfImages][numberOfRows][numberOfColumns];
+            imageMatrices = new double[numberOfImages][numberOfRows*numberOfColumns];
             int c;
             int imageIndex = 0;
-            int rowIndex = 0;
-            int columnIndex = 0;
+            int bitIndex = 0;
+
             while ((c = labelStream.read()) != -1) {
-                imageMatrices[imageIndex][rowIndex][columnIndex] = c;
-                columnIndex++;
-                if(columnIndex == numberOfColumns){
-                    rowIndex++;
-                    columnIndex = 0;
-                }
-                if(rowIndex == numberOfRows){
-                    rowIndex = 0;
+                imageMatrices[imageIndex][bitIndex] = c/1000;
+                bitIndex++;
+                if(bitIndex == 784){
+                    bitIndex = 0;
                     imageIndex++;
                 }
-
-
+                if(imageIndex == numberOfSamples) {
+                    break;
+                }
             }
 
         }catch (FileNotFoundException error){
@@ -65,19 +66,22 @@ public class MnistLoader {
         return imageMatrices;
     }
 
-    private int[] loadLabels(String fileName){
+    private double[][] loadLabels(String fileName, int numberOfSamples){
         FileInputStream labelStream = null;
-        int[] labels = null;
+        double[][] labels = null;
         try{
             labelStream = new FileInputStream(fileName);
             int magicNumber = this.readInt(labelStream);
             int numberOfLabels = this.readInt(labelStream);
-            labels = new int[numberOfLabels];
+            labels = new double[numberOfLabels][10];
             int c;
             int labelIndex = 0;
             while ((c = labelStream.read()) != -1) {
-                labels[labelIndex] = c;
+                labels[labelIndex][c] = 1;
                 labelIndex++;
+                if(labelIndex == numberOfSamples) {
+                    break;
+                }
             }
 
         }catch (FileNotFoundException error){

@@ -1,5 +1,7 @@
 *.class
 *.idea
+target/
+neural-networks.iml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
