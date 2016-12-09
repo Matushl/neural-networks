@@ -31,16 +31,30 @@ public class Application {
         for (int i = 0; i < numberOfTestSamples; i++){
             results[i] = net.execute(reader.testImages[i]);
         }
+        
         int correct = 0;
         for (int i = 0; i < numberOfTestSamples; i++){
+            int maxIndex = 0;
+            double maxResult = results[i][0];
             for(int j = 0; j < 10; j++){
+                if(results[i][j] > maxResult){
+                    maxIndex = j;
+                    maxResult = results[i][j];
+                }
+            }
+            if (reader.testLabels[i][maxIndex] == 1){
+                correct++;
+            }
+            
+            
+            /*for(int j = 0; j < 10; j++){
                 if(results[i][j] > threshold){
                     if (reader.testLabels[i][j] == 1){
                         correct++;
                         break;
                     }
                 }
-            }
+            }*/
         }
         double percentageOfCorrect = ((double)correct)/((double)numberOfTestSamples)*100;
         System.out.println(percentageOfCorrect + " %");
