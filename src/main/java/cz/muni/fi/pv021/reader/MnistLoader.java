@@ -39,7 +39,7 @@ public class MnistLoader {
             int bitIndex = 0;
 
             while ((c = labelStream.read()) != -1) {
-                imageMatrices[imageIndex][bitIndex] = c/1000;
+                imageMatrices[imageIndex][bitIndex] = (double)c/1000;
                 bitIndex++;
                 if(bitIndex == 784){
                     bitIndex = 0;
