@@ -4,6 +4,7 @@ import cz.muni.fi.pv021.functions.HyperbolicTransfer;
 import cz.muni.fi.pv021.functions.SigmoidalTransfer;
 import cz.muni.fi.pv021.network.MultiLayerPerceptron;
 import cz.muni.fi.pv021.reader.MnistLoader;
+import cz.muni.fi.pv021.samples.PersonalSamples;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -43,5 +44,12 @@ public class Application {
         }
         double percentageOfCorrect = ((double)correct)/((double)numberOfTestSamples)*100;
         System.out.println(percentageOfCorrect + " %");
+
+        PersonalSamples pavel = new PersonalSamples("src/main/resources/pavel/");
+        double[][] personalResults = new double[10][];
+        for (int i = 0; i < 10; i++){
+            personalResults[i] = net.execute(pavel.parsedImage[i]);
+        }
+
     }
 }
